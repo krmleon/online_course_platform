@@ -5,10 +5,13 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Course from './Course'
 
-const CourseList = ({courses}) => {
+const CourseList = ({courses, removeCourse}) => {
 
   const cols = () => courses.map(course =>
-    <Course key={course.id} course={course} /> )
+    <Course
+    remove={() => removeCourse(course.id)}
+    key={course.id}
+    course={course} /> )
 
   return (
       <Row>

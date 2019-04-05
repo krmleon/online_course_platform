@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
 import './App.css';
-import CourseList from './components/CourseList'
-import Login from './components/Login'
+import Login from './views/Login'
+import Home from './views/Home'
 import courseService from './services/courses'
 
-const App = () => {
+const App = () => {  
   const user = "moi"
   const [courses, setCourses] = useState([])  
-  const [newCourse, setNewCourse] = useState('')
+  // const [newCourse, setNewCourse] = useState('')
 
   useEffect(() => {
     courseService
@@ -30,43 +28,38 @@ const App = () => {
       .post('http://localhost:3001/api/courses', courseObject)
       .then(response => {
         console.log(response)
-  })}
+  })}*/
 
   // Kurssin poistaminen
-  const removeCourse = (id) => {
-    return () => {
-      const url = baseUrl+`/${id}`
-      console.log(url)
-      const person = this.state.persons.find(n => n.id === id)
-      if (window.confirm("Poistetaanko "+person.name+"?")) {
-        axios
-          .delete(url)
-          .then(() => {
-            this.setState({
-              persons: this.state.persons.filter(person => person.id !== id)
-            })
-          })
-      }
-    }
-  }*/
-
-  if (user === null) {
-    return (
-      <Container>
-        <Row className="justify-content-md-center">
-        <Col lg={6}>
-          <Login />
-        </Col>
-        </Row>
-      </Container>
+  const removeCourse = id => {
+    const course = courses.find(n => n.id === id)
     
-  )}
+    if (window.confirm("Poistetaanko "+course.name+"?")) {
+      courseService
+        .remove(id).then(() => {
+          setCourses(
+            courses.filter(course => course.id !== id)
+          )
+        })
+    }
+  }
+
   return (
-    <Container>
-      <CourseList courses={courses}/>
-    </Container>  
+    <Router>
+      
+      <Route exact path="/" render={() =>
+            user ?
+            <Home
+              courses={courses}
+              removeCourse={removeCourse}
+            />
+            : <Redirect to="/login" />
+          } />
+          <Route path="/login" render={() =>
+            <Login />
+          } />
+    </Router>
   )
 }
-
 
 export default App;

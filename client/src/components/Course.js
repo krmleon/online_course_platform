@@ -3,7 +3,7 @@ import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 
-const Course = ({course}) => {
+const Course = ({course, remove}) => {
   
     return (
       <Col lg={4}>
@@ -19,7 +19,7 @@ const Course = ({course}) => {
           }
           </Card.Body>
           <Card.Footer>
-            <Button className="float-right" size="sm" variant="danger">delete</Button>
+            <Button onClick={remove} className="float-right" size="sm" variant="danger">delete</Button>
             <Button className="float-right" size="sm" variant="secondary">edit</Button>
           </Card.Footer>
         </Card>
