@@ -1,11 +1,96 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 5000;
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const cors = require('cors')
 
-// console.log that your server is up and running
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.use(cors())
+app.use(bodyParser.json())
 
-// create a GET route
-app.get('/express_backend', (req, res) => {
-  res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
-});
+let courses = [
+      {
+          name: "Gerbiilikurssi",
+          description: "Kurssi gerbiileistä.",
+          id: 1
+      },
+      {
+          name: "Valokuvauskurssi",
+          description: "Kurssi valokuvauksesta.",
+          id: 2
+      },
+      {
+          name: "Vihanhallintakurssi",
+          description: "Kurssi vihanhallinnasta.",
+          id: 3
+      },
+      {
+          name: "Kaktuskurssi",
+          description: "Kurssi kaktuksista.",
+          id: 4
+      },
+      {
+          name: "Mustikkakurssi",
+          description: "Kurssi mustikoista.",
+          id: 5
+      }
+  ]
+
+  const generateId = () => {
+    const maxId = courses.length > 0
+      ? Math.max(...courses.map(n => n.id))
+      : 0
+    return maxId + 1
+  }
+
+  app.get('/', (req, res) => {
+    res.send('<h1>Hello World!</h1>')
+  })
+  
+  // get all
+  app.get('/api/courses', (req, res) => {
+    res.json(courses)
+  })
+
+  // get one
+  app.get('/api/courses/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const course = courses.find(course => course.id === id)
+    if (course) {
+      response.json(course)
+    } else {
+      response.status(404).end()
+    }
+  })
+
+  // post  
+  app.post('/api/courses', (request, response) => {
+    const body = request.body
+  
+    if (!body.name) {
+      return response.status(400).json({ 
+        error: 'name missing' 
+      })
+    }
+  
+    const course = {
+      name: body.name,
+      descriptiont: body.description || '',
+      id: generateId(),
+    }
+  
+    courses = courses.concat(course)
+  
+    response.json(course)
+  })
+
+  // delete
+  app.delete('/api/courses/:id', (request, response) => {
+    const id = Number(request.params.id);
+    courses = courses.filter(course => course.id !== id);
+  
+    response.status(204).end();
+  });
+  
+  const PORT = 3001
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
