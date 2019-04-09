@@ -7,32 +7,44 @@ app.use(cors())
 app.use(bodyParser.json())
 
 let courses = [
-      {
-          name: "Gerbiilikurssi",
-          description: "Kurssi gerbiileistä.",
-          id: 1
-      },
-      {
-          name: "Valokuvauskurssi",
-          description: "Kurssi valokuvauksesta.",
-          id: 2
-      },
-      {
-          name: "Vihanhallintakurssi",
-          description: "Kurssi vihanhallinnasta.",
-          id: 3
-      },
-      {
-          name: "Kaktuskurssi",
-          description: "Kurssi kaktuksista.",
-          id: 4
-      },
-      {
-          name: "Mustikkakurssi",
-          description: "Kurssi mustikoista.",
-          id: 5
-      }
-  ]
+  {
+    name: "Gerbiilikurssi",
+    description: "Kurssi gerbiileistä kaikille gerbiilinmielisille.",
+    id: 1,
+    parts: [
+    {
+      id: 1,
+      name: "Värit",
+      content: "Gerbiileillä on monia värejä, esimerkiksi punainen, keltainen ja musta."
+    },
+    {
+      id: 2,
+      name: "Hoito",
+      content: "Gerbiilit tarvitsevat ruokaa ja vettä."
+    }
+    ]
+  },
+  {
+    name: "Valokuvauskurssi",
+    description: "Kurssi valokuvauksesta.",
+    id: 2
+  },
+  {
+    name: "Vihanhallintakurssi",
+    description: "Kurssi vihanhallinnasta.",
+    id: 3
+  },
+  {
+    name: "Kaktuskurssi",
+    description: "Kurssi kaktuksista.",
+    id: 4
+  },
+  {
+    name: "Mustikkakurssi",
+    description: "Kurssi mustikoista.",
+    id: 5
+  }
+]
 
   const generateId = () => {
     const maxId = courses.length > 0
@@ -73,7 +85,7 @@ let courses = [
   
     const course = {
       name: body.name,
-      descriptiont: body.description || '',
+      description: body.description || '',
       id: generateId(),
     }
   
