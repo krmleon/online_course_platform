@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import CoursePart from '../components/CoursePart'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -8,8 +8,13 @@ import Button from 'react-bootstrap/Button'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import Card from 'react-bootstrap/Card'
 
-const CoursePage = ({match, courses}) => {
+const CoursePage = ({history, match, courses, removeCourse}) => {
   const course = courses.find(p => p.id === Number(match.params.id))
+
+  const remove = () => {
+    removeCourse(course.id)
+    history.push('/')
+  }
 
   const cols = () => course.parts.map(part =>
     <CoursePart
@@ -30,18 +35,24 @@ const CoursePage = ({match, courses}) => {
         <h4>Kurssin osat:</h4>
       </Col>
       <Col>
-        <Button className="float-right" size="sm" variant="danger">delete</Button>
+        <Button onClick={remove} className="float-right" size="sm" variant="danger">delete</Button>
         <Button className="float-right" size="sm" variant="secondary">edit</Button>
       </Col>
     </Row>
     <Row>
     {course.parts ? cols() : <Col>Ei osia!</Col>}
     <Col>
-    <Card className="card h-100" bg="light" style={{margin: '10px', border: 'dashed #cacaca'}}>
+    <Card
+      className="card h-100 text-center"
+      bg="light"
+      style={{margin: '10px', border: 'dashed #cacaca'}}
+    >
       <Card.Body>
         <Card.Title>Luo uusi osa</Card.Title>
         <Card.Text>
-          <Button variant="success" size="lg">
+          <Button
+          variant="link"
+          style={{fontSize: '400%'}}>
           +
           </Button>        
       </Card.Text>
@@ -55,4 +66,4 @@ const CoursePage = ({match, courses}) => {
     return null
   }}
 
-export default CoursePage;
+export default withRouter(CoursePage);

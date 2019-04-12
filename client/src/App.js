@@ -32,7 +32,7 @@ const App = () => {
   const removeCourse = id => {
     const course = courses.find(n => n.id === id)
     
-    if (window.confirm("Poistetaanko "+course.name+"?")) {
+    if (window.confirm(`Haluatko varmasti poistaa kurssin ${course.name}? Toiminto poistaa kurssin ja kaikki sen osat.`)) {
       courseService
         .remove(id).then(() => {
           setCourses(
@@ -62,7 +62,7 @@ const App = () => {
           addCourse={addCourse}/>
       } />
       <Route path="/courses/:id" render={(props) =>
-        <CoursePage courses={courses} {...props}/>
+        <CoursePage courses={courses} removeCourse={removeCourse} {...props}/>
       } />
     </Router>
     </div>
