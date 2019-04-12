@@ -101,6 +101,31 @@ let courses = [
   
     response.status(204).end();
   });
+
+  // get all parts of specific course
+  app.get('/api/courses/:courseId/parts', (request, response) => {
+    const courseId = Number(request.params.courseId)
+    const course = courses.find(course => course.id === courseId)
+    if (course.parts) {
+      response.json(course.parts)
+    } else {
+      response.status(404).end()
+    }
+  })
+
+  // get specific part of specific course
+  app.get('/api/courses/:courseId/parts/:partId', (request, response) => {
+    const courseId = Number(request.params.courseId)
+    const partId = Number(request.params.partId)
+    const course = courses.find(course => course.id === courseId)
+    const part = course.parts.find(part => part.id === partId)
+    if (part) {
+      response.json(part)
+    } else {
+      response.status(404).end()
+    }
+  })
+
   
   const PORT = 3001
   app.listen(PORT, () => {
