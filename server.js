@@ -1,133 +1,177 @@
+require('dotenv').config()
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
+const app = express()
 const cors = require('cors')
+const Course = require('./models/course')
+
+const logger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(logger)
 
-let courses = [
-  {
-    name: "Gerbiilikurssi",
-    description: "Kurssi gerbiileistä kaikille gerbiilinmielisille.",
-    id: 1,
-    parts: [
-    {
-      id: 1,
-      name: "Värit",
-      content: "Gerbiileillä on monia värejä, esimerkiksi punainen, keltainen ja musta."
-    },
-    {
-      id: 2,
-      name: "Hoito",
-      content: "Gerbiilit tarvitsevat ruokaa ja vettä."
-    }
-    ]
-  },
-  {
-    name: "Valokuvauskurssi",
-    description: "Kurssi valokuvauksesta.",
-    id: 2
-  },
-  {
-    name: "Vihanhallintakurssi",
-    description: "Kurssi vihanhallinnasta.",
-    id: 3
-  },
-  {
-    name: "Kaktuskurssi",
-    description: "Kurssi kaktuksista.",
-    id: 4
-  },
-  {
-    name: "Mustikkakurssi",
-    description: "Kurssi mustikoista.",
-    id: 5
-  }
-]
-
-  const generateId = () => {
-    const maxId = courses.length > 0
-      ? Math.max(...courses.map(n => n.id))
-      : 0
-    return maxId + 1
-  }
-
-  app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
+// get all courses
+app.get('/api/courses', (request, response) => {
+  Course.find({}).then(courses => {
+    response.json(courses.map(course => course.toJSON()))
   })
-  
-  // get all
-  app.get('/api/courses', (req, res) => {
-    res.json(courses)
-  })
+})
 
-  // get one
-  app.get('/api/courses/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const course = courses.find(course => course.id === id)
+// get course by id
+app.get('/api/courses/:courseId', (request, response, next) => {
+  Course.findById(request.params.courseId)
+  .then(course => {
     if (course) {
-      response.json(course)
-    } else {
-      response.status(404).end()
+      response.json(course.toJSON())
     }
+    else {
+      response.status(404).end
+    }    
+  })
+  .catch(error => next(error))
+})
+
+// post course
+app.post('/api/courses', (request, response) => {
+  const body = request.body
+
+  if (body.name === undefined) {
+    return response.status(400).json({ error: 'name missing' })
+  }
+
+  const course = new Course({
+    name: body.name,
+    description: body.description,
+    parts: body.parts || []
   })
 
-  // post  
-  app.post('/api/courses', (request, response) => {
-    const body = request.body
-  
-    if (!body.name) {
-      return response.status(400).json({ 
-        error: 'name missing' 
-      })
-    }
-  
-    const course = {
-      name: body.name,
-      description: body.description || '',
-      id: generateId(),
-    }
-  
-    courses = courses.concat(course)
-  
-    response.json(course)
+  course.save().then(savedCourse => {
+    response.json(savedCourse.toJSON())
   })
+})
 
-  // delete
-  app.delete('/api/courses/:id', (request, response) => {
-    const id = Number(request.params.id);
-    courses = courses.filter(course => course.id !== id);
-  
-    response.status(204).end();
-  });
+// delete course
+app.delete('/api/courses/:courseId', (request, response, next) => {
+  Note.findByIdAndRemove(request.params.courseId)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
+})
 
-  // get all parts of specific course
-  app.get('/api/courses/:courseId/parts', (request, response) => {
-    const courseId = Number(request.params.courseId)
-    const course = courses.find(course => course.id === courseId)
-    if (course.parts) {
+// edit course (not tested!)
+app.put('/api/courses/:courseId', (request, response, next) => {
+  const body = request.body
+
+  const course = {
+    name: body.name,
+    description: body.description,
+    parts: body.parts
+  }
+
+  Course.findByIdAndUpdate(request.params.courseId, course, { new: true })
+    .then(updatedCourse => {
+      response.json(updatedCourse.toJSON())
+    })
+    .catch(error => next(error))
+})
+
+// get all parts of specific course
+app.get('/api/courses/:courseId/parts', (request, response, next) => {
+  Course.findById(request.params.courseId)
+  .then(course => {
+    if (course) {
       response.json(course.parts)
-    } else {
-      response.status(404).end()
+    }
+    else {
+      response.status(404).end() 
     }
   })
+  .catch(error => next(error))
+})
 
-  // get specific part of specific course
-  app.get('/api/courses/:courseId/parts/:partId', (request, response) => {
-    const courseId = Number(request.params.courseId)
-    const partId = Number(request.params.partId)
-    const course = courses.find(course => course.id === courseId)
-    const part = course.parts.find(part => part.id === partId)
-    if (part) {
+// get specific part of specific course
+app.get('/api/courses/:courseId/parts/:partId', (request, response, next) => {
+  Course.findById(request.params.courseId)
+  .then(course => {
+    const part = course.parts.id(request.params.partId);
+    if (part) {      
       response.json(part)
-    } else {
-      response.status(404).end()
+    }
+    else {
+      response.status(404).end() 
     }
   })
+  .catch(error => next(error))
+})
 
-  
-  const PORT = 3001
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+// post course part
+app.post('/api/courses/:courseId/parts/', (request, response) => {
+  const body = request.body
+
+  if (body.name === undefined) {
+    return response.status(400).json({ error: 'name missing' })
+  }
+  Course.findById(request.params.courseId)
+  .then(course => {
+    course.parts.push({
+      name: body.name,
+      content: body.content
+    })
+    course.save().then(savedCourse => {
+      response.json(savedCourse.toJSON())
+    })
   })
+})
+
+// delete course part
+app.delete('/api/courses/:courseId/parts/:partId', (request, response, next) => {
+  Course.findById(request.params.courseId)
+  .then(course => {
+    const part = course.parts.id(request.params.partId);
+    if (part) {      
+      part.remove()
+      course.save()
+      .then(savedCourse => {
+        console.log(savedCourse)
+        response.status(204).end
+      })
+      .catch(error => next(error))
+    }
+    else {
+      response.status(404).end() 
+    }
+  })
+  .catch(error => next(error))
+})
+
+// error handling
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError' && error.kind == 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(errorHandler)
+
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
