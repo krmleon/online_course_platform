@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
-import Button from 'react-bootstrap/Button'
 
 const Course = ({course, remove}) => {
     return (
@@ -22,8 +21,6 @@ const Course = ({course, remove}) => {
           }
           </Card.Body>
           <Card.Footer>
-            <Button onClick={remove} className="float-right" size="sm" variant="danger">delete</Button>
-            <Button className="float-right" size="sm" variant="secondary">edit</Button>
           </Card.Footer>
         </Card>
       </Col>

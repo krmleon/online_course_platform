@@ -59,14 +59,14 @@ app.post('/api/courses', (request, response) => {
 
 // delete course
 app.delete('/api/courses/:courseId', (request, response, next) => {
-  Note.findByIdAndRemove(request.params.courseId)
+  Course.findByIdAndRemove(request.params.courseId)
     .then(result => {
       response.status(204).end()
     })
     .catch(error => next(error))
 })
 
-// edit course (not tested!)
+// edit course
 app.put('/api/courses/:courseId', (request, response, next) => {
   const body = request.body
 
@@ -75,6 +75,7 @@ app.put('/api/courses/:courseId', (request, response, next) => {
     description: body.description,
     parts: body.parts
   }
+  console.log(course)
 
   Course.findByIdAndUpdate(request.params.courseId, course, { new: true })
     .then(updatedCourse => {
@@ -140,8 +141,7 @@ app.delete('/api/courses/:courseId/parts/:partId', (request, response, next) => 
       part.remove()
       course.save()
       .then(savedCourse => {
-        console.log(savedCourse)
-        response.status(204).end
+          response.json(savedCourse.toJSON())
       })
       .catch(error => next(error))
     }
@@ -150,6 +150,22 @@ app.delete('/api/courses/:courseId/parts/:partId', (request, response, next) => 
     }
   })
   .catch(error => next(error))
+})
+
+// edit course part
+app.put('/api/courses/:courseId/parts/:partId', (request, response, next) => {
+  const body = request.body
+
+  Course.findById(request.params.courseId)
+  .then((course) => {
+    const part = course.parts.id(request.params.partId)
+    part.set(body)    
+    course.save().then(savedCourse => {
+      response.json(savedCourse.toJSON())
+  })
+})
+  .catch(error => next(error))
+
 })
 
 // error handling

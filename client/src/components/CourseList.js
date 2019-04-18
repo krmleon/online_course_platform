@@ -17,12 +17,14 @@ const cols = () => courses.map(course =>
 return (
   <Row>
   <Col style={{marginBottom: '10px'}}>
-    <Card className="card h-100" bg="light" style={{margin: '10px', border: 'dashed #cacaca'}}>
+    <Card className="card h-100 text-center" bg="light" style={{margin: '10px', border: 'dashed #cacaca'}}>
       <Card.Body>
         <Card.Title>Luo uusi kurssi</Card.Title>
         <Card.Text>
         <Link to={`/add-course`}>
-          <Button variant="success" size="lg">
+        <Button
+          variant="link"
+          style={{fontSize: '400%'}}>
           +
           </Button>
         </Link>            

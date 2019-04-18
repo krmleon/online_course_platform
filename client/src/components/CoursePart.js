@@ -1,10 +1,10 @@
 import React from 'react';
-// import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 
-const Course = ({part}) => {
+const CoursePart = ({part, course, removeCoursePart}) => {
     return (
       <Col lg={4}>
         <Card className="card h-100" style={{margin: '10px'}}>
@@ -18,9 +18,16 @@ const Course = ({part}) => {
             //<Card.Link href="#">Another Link</Card.Link>
           }
           </Card.Body>
-          <Card.Footer>
-            <Button className="float-right" size="sm" variant="danger">delete</Button>
-            <Button className="float-right" size="sm" variant="secondary">edit</Button>
+          <Card.Footer>            
+            <Button onClick={removeCoursePart} className="float-right" size="sm" variant="danger">delete</Button>
+            <Link to={`/courses/${course.id}/parts/${part.id}/edit`}>
+            <Button
+              className="float-right"
+              size="sm"
+              variant="outline-primary"
+              style={{marginRight: '10px'}}>
+                edit
+            </Button></Link>
           </Card.Footer>
         </Card>
       </Col>
@@ -29,4 +36,4 @@ const Course = ({part}) => {
   }
 
 
-export default Course;
+export default CoursePart;
