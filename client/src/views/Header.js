@@ -1,7 +1,10 @@
 import React from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 
-
+/**
+ * Sivuston ylin navigaatiopalkki. Saa parametrina käyttäjä-olion (tuleva toiminnallisuus)
+ * @param {object} user 
+ */
 const Header = ({user}) => {  
   return (
     <Navbar bg="dark" variant="dark" expand="lg">

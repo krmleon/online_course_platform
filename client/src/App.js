@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Redirect} from 'react-router-dom'
 import './App.css';
-import {Login, Home, Header, CourseForm, CoursePage, EditCoursePart, AddCoursePart, EditCourse} from './views/index'
+import {Login, Home, Header, AddCourse, CoursePage, EditCoursePart, AddCoursePart, EditCourse} from './views/index'
 import courseService from './services/courses'
 import partService from './services/parts'
 
+/**
+ * App-komponentti
+ * 
+ * Sisältää sovelluksen tilan (kurssit), metodit kurssien ja kurssin osien
+ * lisäämiseen, muokkaamiseen ja poistamiseen, sekä sovelluksen reitityksen.
+ */
+
 const App = () => {  
-  const user = "moi"
+  /** Apumuuttuja mallintamaan käyttäjää ennen käyttäjäpohjaisuuden toteuttamista. */
+  const user = "user"
+  /** Komponentin tila. */
   const [courses, setCourses] = useState([])
 
-  // Kurssien haku ja asetus komponentin tilaan
+  /**
+   * Hakee kurssit ja asettaa ne komponentin tilaan.
+   */
   useEffect(() => {
     courseService
       .getAll().then(initialCourses => {
@@ -17,7 +28,11 @@ const App = () => {
       })
 }, [])
 
-  // Kurssin lisääminen
+  /**
+   * Suorittaa pyynnön lisätä uusi kurssi palvelimelle. Lisää uuden
+   * kurssin komponentin tilaan.
+   * @param {object} values 
+   */
   const addCourse = values => {
     const courseObject = {
       name: values.courseName,
@@ -30,7 +45,12 @@ const App = () => {
         setCourses(courses.concat(returnedCourse))
   })}
 
-  // Kurssin muokkaaminen
+  /**
+   * Suorittaa pyynnön muokata palvelimella olevaa kurssia. Vaihtaa komponentin
+   * tilassa olevan vanhan kurssin uuteen (muokattuun).
+   * @param {string} id 
+   * @param {object} values 
+   */
   const editCourse = (id, values) => {
     const course = courseById(id)
     const changedCourse = {
@@ -47,7 +67,10 @@ const App = () => {
       })
   }
 
-  // Kurssin poistaminen
+  /**
+   * Suorittaa pyynnön poistaa kurssi palvelimelta. Poistaa kurssin komponentin tilasta.
+   * @param {string} id 
+   */
   const removeCourse = id => {
     const course = courseById(id)
     if (window.confirm(`Haluatko varmasti poistaa kurssin ${course.name}? Toiminto poistaa kurssin ja kaikki sen osat.`)) {
@@ -60,7 +83,12 @@ const App = () => {
     }
   }
 
-  // Osan lisääminen kurssille
+  /**
+   * Suorittaa pyynnön lisätä kurssille uusi osa. Vaihtaa komponentin
+   * tilassa olevan vanhan kurssin uuteen (muokattuun).
+   * @param {string} id 
+   * @param {object} values 
+   */
   const addCoursePart = (id, values) => {
     const partObject = {
       name: values.name,
@@ -74,7 +102,12 @@ const App = () => {
       })
   }
 
-  // Osan poistaminen
+  /**
+   * Suorittaa pyynnön poistaa kurssin osa. Vaihtaa komponentin
+   * tilassa olevan vanhan kurssin uuteen (muokattuun).
+   * @param {string} id 
+   * @param {string} partid 
+   */
   const removeCoursePart = (id, partid) => {
     if (window.confirm(`Haluatko varmasti poistaa tämän osan? Toimintoa ei voi peruuttaa.`)) {
       partService
@@ -85,7 +118,13 @@ const App = () => {
     }
   }
 
-  // Osan muokkaaminen
+  /**
+   * Suorittaa pyynnön muokata kurssin osaa. Vaihtaa komponentin
+   * tilassa olevan vanhan kurssin uuteen (muokattuun).
+   * @param {string} id 
+   * @param {string} partid 
+   * @param {object} values 
+   */
   const editCoursePart = (id, partid, values) => {
     const changedCoursePart = {
       name: values.name,
@@ -96,14 +135,15 @@ const App = () => {
     partService
       .update(id, partid, changedCoursePart)
       .then(response => {
-        console.log(response)
         setCourses(courses.map(course =>
           course.id !== id ? course : response))
-          console.log(courses)
       })
   }
 
-  // Kurssin etsiminen
+  /**
+   * Apufunktio kurssin etsimiseen komponentin tilasta.
+   * @param {string} id 
+   */
   function courseById(id) {
     if (courses) {
       const course = courses.find(course => course.id === id)
@@ -112,7 +152,11 @@ const App = () => {
     return null
   }
 
-  // Kurssin osan etsiminen
+  /**
+   * Apufunktio kurssin osan etsimiseen komponentin tilasta.
+   * @param {string} id 
+   * @param {string} partid 
+   */
   function partById (id, partid) {
     const course = courseById(id) 
     if (course) { // tarkistetaan, että data on haettu palvelimelta
@@ -122,6 +166,7 @@ const App = () => {
     return null
   }    
 
+  /** Renderöi komponentin sovelluksen reitin mukaan. */
   return (
     <div>
     <Router>
@@ -138,7 +183,7 @@ const App = () => {
         <Login />
       } />
       <Route path="/add-course" render={() =>
-        <CourseForm
+        <AddCourse
           addCourse={addCourse}/>
       } />
       <Route exact path="/courses/:id" render={(props) =>

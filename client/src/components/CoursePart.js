@@ -4,6 +4,12 @@ import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 
+/**
+ * Kurssisivulla yhtä kurssin osaa mallintava komponentti.
+ * @param {object} part
+ * @param {object} course
+ * @param {function} removeCoursePart
+ */
 const CoursePart = ({part, course, removeCoursePart}) => {
     return (
       <Col lg={4}>
@@ -13,10 +19,6 @@ const CoursePart = ({part, course, removeCoursePart}) => {
             <Card.Text>
               {part.content}
             </Card.Text>            
-            
-            {//<Card.Link href="#">Card Link</Card.Link>
-            //<Card.Link href="#">Another Link</Card.Link>
-          }
           </Card.Body>
           <Card.Footer>            
             <Button onClick={removeCoursePart} className="float-right" size="sm" variant="danger">delete</Button>

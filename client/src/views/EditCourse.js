@@ -7,17 +7,31 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
+/**
+ * Komponentti kurssin muokkaamiseen.
+ * @param {function} editCourse
+ * @param {object} course
+ */
 const EditCourse = ({editCourse, course}) => {
-  if (course) { // tarkistetaan, että course on alustettu
+  if (course) { // tarkistetaan, että kurssi-olio on haettu palvelimelta
 
+  /** Asetetaan kurssi-olio komponentin tilaan. */
   const [formCourse, setFormCourse] = useState(course)
 
+  /** 
+   * Käsittelee muutokset lomakkeessa. Luo spread-operaatiolla kopion vanhasta kurssi-oliosta,
+   * jonka jälkeen asettaa uuden arvon käyttäjän muuttamalle arvolle.
+   */
   const handleChange = (event) => {
     setFormCourse({
       ...formCourse, [event.target.id]: event.target.value
     })
   }
   
+  /** 
+   * Tapahtumankäsittelijä lomakkeen lähetykseen. Kutsuu editCourse-metodia ja antaa parametreiksi
+   * kurssin id:n ja uuden, muokatun kurssi-olion.
+   */
   const handleSubmit = (event) => {
     event.preventDefault()
     editCourse(formCourse.id, formCourse)
@@ -62,7 +76,7 @@ const EditCourse = ({editCourse, course}) => {
       </Col></Row></Container>
     )
   }
-  else {
+  else { // palautetaan null, jos kurssi-oliota ei ole haettu palvelimelta
     return null
   }
 }

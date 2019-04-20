@@ -1,6 +1,5 @@
-import CourseForm from './CourseForm'
+import AddCourse from './AddCourse'
 import CoursePage from './CoursePage'
-import Footer from './Footer'
 import Home from './Home'
 import Header from './Header'
 import Login from './Login'
@@ -9,9 +8,8 @@ import AddCoursePart from './AddCoursePart'
 import EditCourse from './EditCourse'
 
 export {
-  CourseForm,
+  AddCourse,
   CoursePage,
-  Footer,
   Home,
   Header,
   Login,

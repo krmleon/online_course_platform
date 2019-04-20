@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
 
-const Course = ({course, remove}) => {
+/**
+ * Sovelluksen etusivulla yksittäistä kurssia mallintava komponentti.
+ * @param {object} course 
+ */
+const Course = ({course}) => {
     return (
       <Col style={{marginBottom: '10px'}} lg={4}>
         <Card className="card h-100" style={{margin: '10px'}}>
@@ -14,11 +18,7 @@ const Course = ({course, remove}) => {
             </Card.Subtitle>
             <Card.Text>
               {course.description}
-            </Card.Text>            
-            
-            {//<Card.Link href="#">Card Link</Card.Link>
-            //<Card.Link href="#">Another Link</Card.Link>
-          }
+            </Card.Text>
           </Card.Body>
           <Card.Footer>
           </Card.Footer>

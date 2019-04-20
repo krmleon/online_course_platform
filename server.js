@@ -1,3 +1,7 @@
+/**
+ * Sovelluksen palvelin ja REST API. 
+ */
+
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -5,6 +9,7 @@ const app = express()
 const cors = require('cors')
 const Course = require('./models/course')
 
+/** Apumetodi http-pyyntöjen loggaukseen. */
 const logger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
@@ -17,14 +22,18 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(logger)
 
-// get all courses
+/** 
+ * REST API tietokannan kanssa kommunikointiin.
+ */
+
+/** Kaikkien kurssien haku */
 app.get('/api/courses', (request, response) => {
   Course.find({}).then(courses => {
     response.json(courses.map(course => course.toJSON()))
   })
 })
 
-// get course by id
+/** Kurssin haku id:n perusteella */
 app.get('/api/courses/:courseId', (request, response, next) => {
   Course.findById(request.params.courseId)
   .then(course => {
@@ -38,7 +47,7 @@ app.get('/api/courses/:courseId', (request, response, next) => {
   .catch(error => next(error))
 })
 
-// post course
+/** Uuden kurssin lisäys */
 app.post('/api/courses', (request, response) => {
   const body = request.body
 
@@ -57,7 +66,7 @@ app.post('/api/courses', (request, response) => {
   })
 })
 
-// delete course
+/** Kurssin poisto */
 app.delete('/api/courses/:courseId', (request, response, next) => {
   Course.findByIdAndRemove(request.params.courseId)
     .then(result => {
@@ -66,7 +75,7 @@ app.delete('/api/courses/:courseId', (request, response, next) => {
     .catch(error => next(error))
 })
 
-// edit course
+/** Kurssin muokkaus */
 app.put('/api/courses/:courseId', (request, response, next) => {
   const body = request.body
 
@@ -75,7 +84,6 @@ app.put('/api/courses/:courseId', (request, response, next) => {
     description: body.description,
     parts: body.parts
   }
-  console.log(course)
 
   Course.findByIdAndUpdate(request.params.courseId, course, { new: true })
     .then(updatedCourse => {
@@ -84,7 +92,7 @@ app.put('/api/courses/:courseId', (request, response, next) => {
     .catch(error => next(error))
 })
 
-// get all parts of specific course
+/** Kurssin kaikkien osien haku */
 app.get('/api/courses/:courseId/parts', (request, response, next) => {
   Course.findById(request.params.courseId)
   .then(course => {
@@ -98,7 +106,7 @@ app.get('/api/courses/:courseId/parts', (request, response, next) => {
   .catch(error => next(error))
 })
 
-// get specific part of specific course
+/** Kurssin osan haku id:n perusteella */
 app.get('/api/courses/:courseId/parts/:partId', (request, response, next) => {
   Course.findById(request.params.courseId)
   .then(course => {
@@ -113,7 +121,7 @@ app.get('/api/courses/:courseId/parts/:partId', (request, response, next) => {
   .catch(error => next(error))
 })
 
-// post course part
+/** Uuden osan lisääminen kurssille */
 app.post('/api/courses/:courseId/parts/', (request, response) => {
   const body = request.body
 
@@ -132,7 +140,7 @@ app.post('/api/courses/:courseId/parts/', (request, response) => {
   })
 })
 
-// delete course part
+/** Kurssin osan poisto */
 app.delete('/api/courses/:courseId/parts/:partId', (request, response, next) => {
   Course.findById(request.params.courseId)
   .then(course => {
@@ -152,7 +160,7 @@ app.delete('/api/courses/:courseId/parts/:partId', (request, response, next) => 
   .catch(error => next(error))
 })
 
-// edit course part
+/** Kurssin osan muokkaus */
 app.put('/api/courses/:courseId/parts/:partId', (request, response, next) => {
   const body = request.body
 
@@ -168,7 +176,7 @@ app.put('/api/courses/:courseId/parts/:partId', (request, response, next) => {
 
 })
 
-// error handling
+/** Virheiden käsittely */
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }

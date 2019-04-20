@@ -6,8 +6,14 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Course from './Course'
 
+/**
+ * Sovelluksen etusivulla kurssilistaa mallintava komponentti.
+ * @param {array} courses
+ * @param {function} removeCourse
+ */
 const CourseList = ({courses, removeCourse}) => {
 
+/** Luo listan kursseista. */
 const cols = () => courses.map(course =>
   <Course
   remove={() => removeCourse(course.id)}

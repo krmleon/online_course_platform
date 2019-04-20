@@ -7,16 +7,27 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
+/**
+ * Komponentti uuden kurssin osan lisäämiseen.
+ * @param {function} addCoursePart
+ * @param {object} history
+ * @param {object} course
+ */
 const AddCoursePart = ({addCoursePart, history, course}) => {
 
+  /** useForm-hookin vakioiden alustus */
   const { values, handleChange, handleSubmit } = useForm(handleForm);
 
+  /** 
+   * Callback-funktio useForm-hookille. Välittää lomakkeen arvot addCoursePart-metodille,
+   * jonka jälkeen palauttaa käyttäjän kurssisivulle.
+   */
   function handleForm() {
     addCoursePart(course.id, values)
     history.push(`/courses/${course.id}`)
   }
   
-  if (course) {
+  if (course) { // tarkistetaan, että kurssi-olio on haettu palvelimelta
   return (
     <Container>
     <Row className="justify-content-md-center">
@@ -46,7 +57,7 @@ const AddCoursePart = ({addCoursePart, history, course}) => {
     </Col></Row></Container>
   )
   }
-  else {
+  else { // palautetaan null, jos kurssi-oliota ei ole haettu palvelimelta
     return null
   }
 }

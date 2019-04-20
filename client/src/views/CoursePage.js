@@ -9,13 +9,24 @@ import Button from 'react-bootstrap/Button'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import Card from 'react-bootstrap/Card'
 
+/**
+ * Kurssisivua mallintava komponentti. 
+ * @param {object} history
+ * @param {object} course
+ * @param {function} removeCourse
+ * @param {function} removeCoursePart
+ */
 const CoursePage = ({history, course, removeCourse, removeCoursePart}) => {
 
+  /** Metodi kurssin poistamiseen. Kutsuu removeCourse-metodia, jonka jälkeen palauttaa
+   * käyttäjän etusivulle.
+   */
   const remove = () => {
     removeCourse(course.id)
     history.push('/')
   }
-
+  
+  /** Luo listan kurssin osista. */
   const cols = () => course.parts.map(part =>
     <CoursePart
     course={course}
@@ -24,8 +35,7 @@ const CoursePage = ({history, course, removeCourse, removeCoursePart}) => {
     removeCoursePart={() => removeCoursePart(course.id, part.id)} /> )
 
 
-  if (course) {
-
+  if (course) { // tarkistetaan, että kurssi-olio on haettu palvelimelta
     return (
     <Container>
     <Breadcrumb>
@@ -75,7 +85,7 @@ const CoursePage = ({history, course, removeCourse, removeCoursePart}) => {
     </Container>
   );
 }
-  else {
+  else { // palautetaan null, jos kurssi-oliota ei ole haettu palvelimelta
     return null
   }}
 

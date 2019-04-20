@@ -7,13 +7,23 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-const CourseForm = (props) => {
+/**
+ * Komponentti uuden kurssin lisäämiseen.
+ * @param {function} addCourse
+ * @param {object} history
+ */
+const AddCourse = ({addCourse, history}) => {
 
+  /** useForm-hookin vakioiden alustus */
   const { values, handleChange, handleSubmit } = useForm(handleForm);
 
+  /** 
+   * Callback-funktio useForm-hookille. Välittää lomakkeen arvot addCourse-metodille,
+   * jonka jälkeen palauttaa käyttäjän etusivulle.
+   */
   function handleForm() {
-    props.addCourse(values)
-    props.history.push("/");
+    addCourse(values)
+    history.push("/");
   }
   
     
@@ -47,4 +57,4 @@ const CourseForm = (props) => {
   );
 }
 
-export default withRouter(CourseForm);
+export default withRouter(AddCourse);

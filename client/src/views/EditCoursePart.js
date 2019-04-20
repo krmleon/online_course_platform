@@ -7,18 +7,32 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
+/**
+ * Komponentti kurssin osan muokkaamiseen.
+ * @param {function} editCourse
+ * @param {object} course
+ * @param {object} part
+ */
 const EditCoursePart = ({course, editCoursePart, part}) => {
-  if (course && part) { // tarkistetaan, että part on alustettu
+  if (course && part) { // tarkistetaan, että kurssi- ja osa-oliot on haettu palvelimelta
     
-
+  /** Asetetaan osa-olio komponentin tilaan. */
   const [formPart, setFormPart] = useState(part)
 
+  /** 
+   * Käsittelee muutokset lomakkeessa. Luo spread-operaatiolla kopion vanhasta psa-oliosta,
+   * jonka jälkeen asettaa uuden arvon käyttäjän muuttamalle arvolle.
+   */
   const handleChange = (event) => {
     setFormPart({
       ...formPart, [event.target.id]: event.target.value
     })
   }
   
+  /** 
+   * Tapahtumankäsittelijä lomakkeen lähetykseen. Kutsuu editCoursePart-metodia ja antaa parametreiksi
+   * kurssin id:n, osan id:n ja uuden, muokatun osa-olion.
+   */
   const handleSubmit = (event) => {
     event.preventDefault()
     editCoursePart(course.id, formPart.id, formPart)
@@ -65,7 +79,7 @@ const EditCoursePart = ({course, editCoursePart, part}) => {
       </Col></Row></Container>
     )
   }
-  else {
+  else { // palautetaan null, jos kurssi- ja osa-olioita ei ole haettu palvelimelta
     return null
   }
 }
